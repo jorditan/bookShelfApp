@@ -167,7 +167,6 @@ func (h *BookHandler) HandleBookById(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// ❌ ERROR TIPOGRÁFICO ORIGINAL CORREGIDO
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(updated)
 
