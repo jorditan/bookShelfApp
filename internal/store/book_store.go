@@ -26,19 +26,19 @@ type Store interface {
 
 	// GetAll devuelve todos los libros almacenados.
 	// Retorna un slice de punteros a Libro o un error.
-	GetAll() ([]*model.Libro, error)
+	GetAll() ([]*model.Book, error)
 
 	// GetById devuelve un libro por su ID.
 	// Si no existe o hay error en la DB, devuelve error.
-	GetById(id int) (*model.Libro, error)
+	GetById(id int) (*model.Book, error)
 
 	// Create inserta un nuevo libro en la base de datos.
 	// Devuelve el libro creado con su ID asignado.
-	Create(libro *model.Libro) (*model.Libro, error)
+	Create(libro *model.Book) (*model.Book, error)
 
 	// Update modifica un libro existente.
 	// Recibe el ID del libro a modificar y los nuevos datos.
-	Update(id int, libro *model.Libro) (*model.Libro, error)
+	Update(id int, libro *model.Book) (*model.Book, error)
 
 	// Delete elimina un libro por su ID.
 	Delete(id int) error
@@ -73,10 +73,10 @@ func New(db *sql.DB) Store {
 // -----------------------------
 
 // GetAll obtiene todos los libros de la base de datos.
-func (s *store) GetAll() ([]*model.Libro, error) {
+func (s *store) GetAll() ([]*model.Book, error) {
 
 	// Consulta SQL para obtener todos los libros
-	q := `SELECT id_book, title, author, price FROM book`
+	q := `SELECT id_book, title, author, price, publisher, review, read_date FROM book`
 
 	// Ejecuta la consulta
 	rows, err := s.db.Query(q)
@@ -89,17 +89,17 @@ func (s *store) GetAll() ([]*model.Libro, error) {
 	defer rows.Close()
 
 	// Slice donde se almacenarán los libros
-	var libros []*model.Libro
+	var libros []*model.Book
 
 	// Itera sobre cada fila devuelta por la consulta
 	for rows.Next() {
 
 		// Se inicializa un nuevo Libro
 		// Esto es CLAVE para evitar nil pointer dereference
-		b := &model.Libro{}
+		b := &model.Book{}
 
 		// Se copian las columnas de la fila a los campos del struct
-		err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Price)
+		err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Price, &b.Publisher, &b.Review, &b.ReadDate)
 		if err != nil {
 			return nil, err
 		}
@@ -117,19 +117,23 @@ func (s *store) GetAll() ([]*model.Libro, error) {
 // -----------------------------
 
 // GetById obtiene un libro específico por su ID.
-func (s *store) GetById(id int) (*model.Libro, error) {
+func (s *store) GetById(id int) (*model.Book, error) {
 
 	// Consulta SQL con parámetro
-	q := `SELECT id_book, title, author, price FROM book WHERE id = $1`
+	q := `SELECT id_book, title, author, price, publisher, review, read_date FROM book WHERE id_book = $1`
 
 	// Se inicializa el struct donde se cargará el resultado
-	libro := &model.Libro{}
+	book := &model.Book{}
 
 	// QueryRow se usa cuando se espera una sola fila
 	err := s.db.QueryRow(q, id).Scan(
-		&libro.ID,
-		&libro.Title,
-		&libro.Author,
+		&book.ID,
+		&book.Title,
+		&book.Author,
+		&book.Price,
+		&book.Publisher,
+		&book.Review,
+		&book.ReadDate,
 	)
 
 	if err != nil {
@@ -137,36 +141,7 @@ func (s *store) GetById(id int) (*model.Libro, error) {
 		return nil, err
 	}
 
-	return libro, nil
-}
-
-func (s *store) GetByPrice(price float32) ([]*model.Libro, error) {
-	// Ejecuta la consulta
-	q := `SELECT id_book, title, author, price FROM book WHERE price < $1`
-
-	rows, err := s.db.Query(q, price)
-	if err != nil {
-		// Si ocurre un error, se retorna inmediatamente
-		return nil, err
-	}
-
-	// Asegura que el cursor se cierre al salir de la función
-	defer rows.Close()
-
-	// Se inicializa el struct donde se cargará los resultados
-	var libros []*model.Libro
-
-	for rows.Next() {
-		b := &model.Libro{}
-
-		err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Price)
-		if err != nil {
-			return nil, err
-		}
-		libros = append(libros, b)
-	}
-
-	return libros, nil
+	return book, nil
 }
 
 // -----------------------------
@@ -174,25 +149,28 @@ func (s *store) GetByPrice(price float32) ([]*model.Libro, error) {
 // -----------------------------
 
 // Create inserta un nuevo libro en la base de datos.
-func (s *store) Create(libro *model.Libro) (*model.Libro, error) {
+func (s *store) Create(book *model.Book) (*model.Book, error) {
 	q := `
-		INSERT INTO book (title, author, price)
-		VALUES ($1, $2, $3)
+		INSERT INTO book (title, author, publisher, review, price, read_date) 
+		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id_book
 	`
 
 	err := s.db.QueryRow(
 		q,
-		libro.Title,
-		libro.Author,
-		libro.Price,
-	).Scan(&libro.ID)
+		book.Title,
+		book.Author,
+		book.Publisher,
+		book.Review,
+		book.Price,
+		book.ReadDate,
+	).Scan(&book.ID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return libro, nil
+	return book, nil
 }
 
 // -----------------------------
@@ -200,21 +178,21 @@ func (s *store) Create(libro *model.Libro) (*model.Libro, error) {
 // -----------------------------
 
 // Update modifica un libro existente.
-func (s *store) Update(id int, libro *model.Libro) (*model.Libro, error) {
+func (s *store) Update(id int, book *model.Book) (*model.Book, error) {
 
 	// Consulta SQL de actualización
-	q := `UPDATE books SET title = $1, author = $2 WHERE id_book = $3`
+	q := `UPDATE book SET title = $1, author = $2, publisher = $3, review = $4, price = $5, read_date = $6 WHERE id_book = $7`
 
 	// Ejecuta la actualización
-	_, err := s.db.Exec(q, libro.Title, libro.Author, id)
+	_, err := s.db.Exec(q, book.Title, book.Author, book.Publisher, book.Review, book.Price, book.ReadDate, id)
 	if err != nil {
 		return nil, err
 	}
 
 	// Se asegura que el ID del struct coincida
-	libro.ID = id
+	book.ID = id
 
-	return libro, nil
+	return book, nil
 }
 
 // -----------------------------
@@ -225,7 +203,7 @@ func (s *store) Update(id int, libro *model.Libro) (*model.Libro, error) {
 func (s *store) Delete(id int) error {
 
 	// Consulta SQL de eliminación
-	q := `DELETE FROM books WHERE id_book = $1`
+	q := `DELETE FROM book WHERE id_book = $1`
 
 	// Ejecuta el delete
 	_, err := s.db.Exec(q, id)

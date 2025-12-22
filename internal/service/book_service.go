@@ -49,26 +49,24 @@ func New(s store.Store) *Service {
 // OBTENER TODOS LOS LIBROS
 // -----------------------------
 
-func (s *Service) ObtenTodosLosLibros() ([]*model.Libro, error) {
-
-	// ❌ PELIGRO: si logger es nil esto va a causar panic
+func (s *Service) GetAllBooks() ([]*model.Book, error) {
 
 	// Delegación al store
-	libros, err := s.store.GetAll()
+	books, err := s.store.GetAll()
 	if err != nil {
 
 		// Registro del error
 		return nil, err
 	}
 
-	return libros, nil
+	return books, nil
 }
 
 // -----------------------------
 // OBTENER LIBRO POR ID
 // -----------------------------
 
-func (s *Service) ObtenLibroPorId(id int) (*model.Libro, error) {
+func (s *Service) GetBookById(id int) (*model.Book, error) {
 
 	// No hay lógica de negocio adicional,
 	// simplemente se delega al store
@@ -79,39 +77,43 @@ func (s *Service) ObtenLibroPorId(id int) (*model.Libro, error) {
 // CREAR LIBRO
 // -----------------------------
 
-func (s *Service) CrearLibro(libro model.Libro) (*model.Libro, error) {
+func (s *Service) CreateBook(book model.Book) (*model.Book, error) {
 
 	// Regla de negocio:
 	// No se permite crear un libro sin título
-	if libro.Title == "" {
-		return nil, errors.New("necesitamos el título")
+	if book.Title == "" {
+		return nil, errors.New("Title is required")
+	}
+
+	if book.Author == "" {
+		return nil, errors.New("Author is required")
 	}
 
 	// Se delega la persistencia al store
-	return s.store.Create(&libro)
+	return s.store.Create(&book)
 }
 
 // -----------------------------
 // ACTUALIZAR LIBRO
 // -----------------------------
 
-func (s *Service) UpdateAlLibro(id int, libro model.Libro) (*model.Libro, error) {
+func (s *Service) UpdateBook(id int, book model.Book) (*model.Book, error) {
 
 	// Regla de negocio:
 	// El título es obligatorio
-	if libro.Title == "" {
+	if book.Title == "" {
 		return nil, errors.New("necesitamos el título")
 	}
 
 	// Se delega al store
-	return s.store.Update(id, &libro)
+	return s.store.Update(id, &book)
 }
 
 // -----------------------------
 // ELIMINAR LIBRO
 // -----------------------------
 
-func (s *Service) RemoverLibro(id int) error {
+func (s *Service) DeleteBook(id int) error {
 
 	// No hay reglas de negocio adicionales,
 	// se delega directamente al store

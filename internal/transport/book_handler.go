@@ -64,7 +64,7 @@ func (h *BookHandler) HandleBooks(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 
 		// Se obtienen todos los libros desde el service
-		libros, err := h.service.ObtenTodosLosLibros()
+		libros, err := h.service.GetAllBooks()
 		if err != nil {
 			// Error interno del servidor
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -83,7 +83,7 @@ func (h *BookHandler) HandleBooks(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 
 		// Struct donde se cargará el JSON recibido
-		var libro model.Libro
+		var libro model.Book
 
 		// Decodifica el body JSON → struct
 		if err := json.NewDecoder(r.Body).Decode(&libro); err != nil {
@@ -92,7 +92,7 @@ func (h *BookHandler) HandleBooks(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Llama al service para crear el libro
-		created, err := h.service.CrearLibro(libro)
+		created, err := h.service.CreateBook(libro)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -138,7 +138,7 @@ func (h *BookHandler) HandleBookById(w http.ResponseWriter, r *http.Request) {
 	// -----------------------------
 	case http.MethodGet:
 
-		libro, err := h.service.ObtenLibroPorId(id)
+		libro, err := h.service.GetBookById(id)
 		if err != nil {
 			http.Error(w, "No lo encontramos", http.StatusNotFound)
 			return
@@ -152,7 +152,7 @@ func (h *BookHandler) HandleBookById(w http.ResponseWriter, r *http.Request) {
 	// -----------------------------
 	case http.MethodPut:
 
-		var libro model.Libro
+		var libro model.Book
 
 		// Decodifica el JSON recibido
 		if err := json.NewDecoder(r.Body).Decode(&libro); err != nil {
@@ -161,7 +161,7 @@ func (h *BookHandler) HandleBookById(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Llama al service para actualizar
-		updated, err := h.service.UpdateAlLibro(id, libro)
+		updated, err := h.service.UpdateBook(id, libro)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -175,7 +175,7 @@ func (h *BookHandler) HandleBookById(w http.ResponseWriter, r *http.Request) {
 	// -----------------------------
 	case http.MethodDelete:
 
-		if err := h.service.RemoverLibro(id); err != nil {
+		if err := h.service.DeleteBook(id); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
