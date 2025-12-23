@@ -38,17 +38,20 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
+	mux := http.NewServeMux()
+
 	// Inyectar nuestras dependencias
 	bookStore := store.New(db)
 	bookService := service.New(bookStore)
 	bookHandler := transport.New(bookService)
 
-	// Configurar las rutas
-	http.HandleFunc("/books", bookHandler.HandleBooks)
-	http.HandleFunc("/book", bookHandler.HandleBookById)
+	mux.HandleFunc("/books", bookHandler.HandleBooks)
+	mux.HandleFunc("/book", bookHandler.HandleBookById)
+
+	handler := transport.CORSMiddleware(mux)
 
 	fmt.Println("Servidor ejectuándose en http://localhost:8080")
 
 	// Empezar y escuchar al servidor
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	http.ListenAndServe(":8080", handler)
 }
