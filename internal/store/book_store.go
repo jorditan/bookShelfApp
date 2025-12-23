@@ -5,6 +5,8 @@ package store
 import (
 	// Paquete estándar de Go para trabajar con bases de datos SQL
 	"database/sql"
+	"strconv"
+	"strings"
 
 	// Paquete interno que contiene los modelos de dominio.
 	// En este caso, el struct Libro.
@@ -26,7 +28,7 @@ type Store interface {
 
 	// GetAll devuelve todos los libros almacenados.
 	// Retorna un slice de punteros a Libro o un error.
-	GetAll() ([]*model.Book, error)
+	GetAll(limit, offset int, author, title string) ([]*model.Book, error)
 
 	// GetById devuelve un libro por su ID.
 	// Si no existe o hay error en la DB, devuelve error.
@@ -73,15 +75,40 @@ func New(db *sql.DB) Store {
 // -----------------------------
 
 // GetAll obtiene todos los libros de la base de datos.
-func (s *store) GetAll() ([]*model.Book, error) {
+func (s *store) GetAll(limit, offset int, author, title string) ([]*model.Book, error) {
 
 	// Consulta SQL para obtener todos los libros
-	q := `SELECT id_book, title, author, price, publisher, review, read_date FROM book`
+	q := `SELECT 
+		id_book, title, author, price, publisher, review,read_date 
+	FROM book
+	`
+
+	args := []any{}
+	conditions := []string{}
+
+	if author != "" {
+		conditions = append(conditions, "author ILIKE $"+strconv.Itoa(len(args)+1))
+		args = append(args, "%"+author+"%")
+	}
+
+	if title != "" {
+		conditions = append(conditions, "title ILIKE $"+strconv.Itoa(len(args)+1))
+		args = append(args, "%"+title+"%")
+	}
+
+	if len(conditions) > 0 {
+		q += " WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	q += " ORDER BY id_book"
+	q += " LIMIT $" + strconv.Itoa(len(args)+1)
+	q += " OFFSET $" + strconv.Itoa(len(args)+2)
+
+	args = append(args, limit, offset)
 
 	// Ejecuta la consulta
-	rows, err := s.db.Query(q)
+	rows, err := s.db.Query(q, args...)
 	if err != nil {
-		// Si ocurre un error, se retorna inmediatamente
 		return nil, err
 	}
 
@@ -89,27 +116,31 @@ func (s *store) GetAll() ([]*model.Book, error) {
 	defer rows.Close()
 
 	// Slice donde se almacenarán los libros
-	var libros []*model.Book
+	books := make([]*model.Book, 0)
 
 	// Itera sobre cada fila devuelta por la consulta
 	for rows.Next() {
-
 		// Se inicializa un nuevo Libro
 		// Esto es CLAVE para evitar nil pointer dereference
 		b := &model.Book{}
-
-		// Se copian las columnas de la fila a los campos del struct
-		err := rows.Scan(&b.ID, &b.Title, &b.Author, &b.Price, &b.Publisher, &b.Review, &b.ReadDate)
+		err := rows.Scan(
+			&b.ID,
+			&b.Title,
+			&b.Author,
+			&b.Price,
+			&b.Publisher,
+			&b.Review,
+			&b.ReadDate,
+		)
 		if err != nil {
 			return nil, err
 		}
 
 		// Se agrega el libro al slice
-		libros = append(libros, b)
+		books = append(books, b)
 	}
 
-	// Se devuelve el slice completo
-	return libros, nil
+	return books, nil
 }
 
 // -----------------------------

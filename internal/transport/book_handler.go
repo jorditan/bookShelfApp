@@ -63,8 +63,28 @@ func (h *BookHandler) HandleBooks(w http.ResponseWriter, r *http.Request) {
 	// -----------------------------
 	case http.MethodGet:
 
+		pageStr := r.URL.Query().Get("page")
+		limitStr := r.URL.Query().Get("limit")
+		author := r.URL.Query().Get("author")
+		title := r.URL.Query().Get("title")
+
+		page := 1
+		limit := 10
+
+		if pageStr != "" {
+			if p, err := strconv.Atoi(pageStr); err == nil {
+				page = p
+			}
+		}
+
+		if limitStr != "" {
+			if l, err := strconv.Atoi(limitStr); err == nil {
+				limit = l
+			}
+		}
+
 		// Se obtienen todos los libros desde el service
-		libros, err := h.service.GetAllBooks()
+		books, err := h.service.GetAllBooks(page, limit, author, title)
 		if err != nil {
 			// Error interno del servidor
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -75,7 +95,7 @@ func (h *BookHandler) HandleBooks(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		// Se escribe la respuesta en JSON
-		json.NewEncoder(w).Encode(libros)
+		json.NewEncoder(w).Encode(books)
 
 	// -----------------------------
 	// POST /books

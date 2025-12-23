@@ -9,6 +9,7 @@ import (
 	"database/sql"
 	"errors"
 	"main/internal/model"
+	"strings"
 
 	// Capa de persistencia (store)
 	"main/internal/store"
@@ -50,17 +51,23 @@ func New(s store.Store) *Service {
 // OBTENER TODOS LOS LIBROS
 // -----------------------------
 
-func (s *Service) GetAllBooks() ([]*model.Book, error) {
-
-	// Delegación al store
-	books, err := s.store.GetAll()
-	if err != nil {
-
-		// Registro del error
-		return nil, err
+func (s *Service) GetAllBooks(page, limit int, author, title string) ([]*model.Book, error) {
+	if page < 1 {
+		page = 1
 	}
 
-	return books, nil
+	if limit < 1 || limit > 100 {
+		limit = 10
+	}
+
+	offset := (page - 1) * limit
+
+	// Optional normalization (example)
+	author = strings.TrimSpace(author)
+	title = strings.TrimSpace(title)
+
+	// Delegación al store
+	return s.store.GetAll(limit, offset, author, title)
 }
 
 // -----------------------------
