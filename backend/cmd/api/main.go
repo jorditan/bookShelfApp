@@ -8,16 +8,15 @@ import (
 	"main/internal/store"
 	"main/internal/transport"
 
-	"github.com/joho/godotenv"
-
 	"net/http"
 
-	_ "modernc.org/sqlite"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	_ = godotenv.Load()
-	// Conectar a SQLLite
+
+	_ = godotenv.Load("../../.env")
+
 	db, err := db.Connect()
 	if err != nil {
 		log.Fatal(err)
@@ -27,12 +26,15 @@ func main() {
 
 	// Crear el table si no existe
 	q := `
-		CREATE TABLE IF NOT EXISTS books (
-			id SERIAL PRIMARY KEY NOT NULL, 
-			tittle TEXT NOT NULL,
+		CREATE TABLE IF NOT EXISTS book (
+			id_book SERIALA PRIMARY KEY NOT NULL,
+			title TEXT NOT NULL,
 			author TEXT NOT NULL,
-			price NUMERIC(10,2) NOT NULL
-		)
+			publisher TEXT NOT NULL,
+			review TEXT,
+			price REAL,
+			read_date TEXT
+);
 	`
 	if _, err := db.Exec(q); err != nil {
 		log.Fatal(err.Error())
@@ -46,7 +48,7 @@ func main() {
 	bookHandler := transport.New(bookService)
 
 	mux.HandleFunc("/books", bookHandler.HandleBooks)
-	mux.HandleFunc("/book", bookHandler.HandleBookById)
+	mux.HandleFunc("/book/", bookHandler.HandleBookById)
 
 	handler := transport.CORSMiddleware(mux)
 
