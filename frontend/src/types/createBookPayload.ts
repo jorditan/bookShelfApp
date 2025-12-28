@@ -5,5 +5,5 @@ export interface createBookPayload {
   publisher: string;
   review?: string;
   price?: number;
-  read_date?: string;
+  read_date?: string | null;
 }

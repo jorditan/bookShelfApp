@@ -4,6 +4,7 @@ import { Datepicker } from "flowbite-react";
 import EditorText from "./EditorText";
 import { NavLink } from "react-router-dom";
 import { useCreateBook } from "../hooks/useCreateBook";
+import { useNotification } from "../hooks/useNotification";
 
 const Form = () => {
   const [form, setForm] = useState({
@@ -15,6 +16,7 @@ const Form = () => {
   });
 
   const { submitBook, loading, err } = useCreateBook();
+  const { handleNotification } = useNotification();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,6 +29,7 @@ const Form = () => {
       read_date: form.readDate,
       id_book: 0,
     });
+    handleNotification();
   }
   return (
     <>
