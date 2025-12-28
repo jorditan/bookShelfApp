@@ -1,12 +1,36 @@
+import React, { useState } from "react";
 import { Download } from "lucide-react";
 import { Datepicker } from "flowbite-react";
 import EditorText from "./EditorText";
 import { NavLink } from "react-router-dom";
+import { useCreateBook } from "../hooks/useCreateBook";
 
 const Form = () => {
+  const [form, setForm] = useState({
+    title: "",
+    author: "",
+    publisher: "",
+    review: "",
+    readDate: "",
+  });
+
+  const { submitBook, loading, err } = useCreateBook();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    await submitBook({
+      title: form.title,
+      author: form.author,
+      publisher: form.publisher,
+      review: form.review,
+      read_date: form.readDate,
+      id_book: 0,
+    });
+  }
   return (
     <>
-      <form className="w-full mx-auto space-y-4">
+      <form onSubmit={handleSubmit} className="w-full mx-auto space-y-4">
         <div className="flex flex-col gap-4">
           <div id="name" className="flex flex-col gap-1.5">
             <label
@@ -16,6 +40,7 @@ const Form = () => {
               Título *{" "}
             </label>
             <input
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
               type="text"
               id="visitors"
               className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
@@ -31,6 +56,7 @@ const Form = () => {
               Autor *{" "}
             </label>
             <input
+              onChange={(e) => setForm({ ...form, author: e.target.value })}
               type="text"
               id="visitors"
               className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
@@ -46,6 +72,7 @@ const Form = () => {
               Editorial *{" "}
             </label>
             <input
+              onChange={(e) => setForm({ ...form, publisher: e.target.value })}
               type="text"
               id="visitors"
               className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
@@ -83,7 +110,7 @@ const Form = () => {
           </label>
           <EditorText placeholder="Escribe tu análisis aquí..." />
           <div className="flex flex-col gap-2">
-            <div className="w-full flex gap-2 justify-center bg-neutral-secondary items-center border-dashed px-1 py-2 rounded-base border border-neutral-secondary-medium">
+            <div className="w-full flex gap-2 justify-center bg-neutral-secondary items-center border-dashed px-1 py-2 rounded-base border border-gray-400  dark:border-gray-700 hover:bg-neutral-secondary-soft hover:border-brand hover:text-heading cursor-pointer">
               <Download className="w-3 h-3 text-body" />
               <small className="text-body">
                 Haz click para subir una imágen del libro
@@ -109,14 +136,13 @@ const Form = () => {
                 Cancelar
               </button>
             </NavLink>
-            <NavLink to="/">
-              <button
-                type="submit"
-                className="text-white hover:cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-              >
-                Guardar libro
-              </button>
-            </NavLink>
+
+            <button
+              type="submit"
+              className="text-white hover:cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+            >
+              Guardar libro
+            </button>
           </div>
         </div>
       </form>
