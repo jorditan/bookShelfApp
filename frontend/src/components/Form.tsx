@@ -1,4 +1,5 @@
-import { Calendar, Download } from "lucide-react";
+import { Download } from "lucide-react";
+import { Datepicker } from "flowbite-react";
 import EditorText from "./EditorText";
 import { NavLink } from "react-router-dom";
 
@@ -54,21 +55,21 @@ const Form = () => {
           </div>
           <div className="relative max-w-sm flex flex-col gap-1.5">
             <label
-              htmlFor="datepicker"
+              htmlFor="readingDate"
               className="block text-sm font-medium text-heading"
             >
               Fecha de lectura
             </label>
-            <div className="relative">
-              <input
-                id="datepicker-autohide"
-                datepicker-autohide
-                type="text"
-                className="block w-full ps-9 pe-3  bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body"
-                placeholder="Seleccionar fecha"
-              />
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-body pointer-events-none" />
-            </div>
+            <Datepicker
+              id="readingDate"
+              placeholder="Seleccionar fecha"
+              language="es"
+              weekStart={1}
+              showClearButton
+              labelClearButton="Limpiar"
+              showTodayButton
+              labelTodayButton="Hoy"
+            />
           </div>
         </div>
 
