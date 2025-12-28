@@ -27,7 +27,7 @@ const formatDate = (input: string | Date | undefined): string => {
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   return (
-    <div className="bg-neutral-primary-soft hover:border-brand hover:shadow-md transition-all delay-100 block max-w-sm min-w-md p-6 border border-default rounded-base shadow-xs">
+    <div className="bg-neutral-primary-soft hover:border-brand hover:shadow-md transition-all delay-100 block max-w-sm min-w-md p-6 border border-default rounded-base shadow-xs hover:cursor-pointer">
       <a href="#">
         <img
           className="rounded-base"
