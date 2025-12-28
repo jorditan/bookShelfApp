@@ -1,4 +1,4 @@
-import { Download } from "lucide-react";
+import { Calendar, Download } from "lucide-react";
 import EditorText from "./EditorText";
 import { NavLink } from "react-router-dom";
 
@@ -6,52 +6,74 @@ const Form = () => {
   return (
     <>
       <form className="w-full mx-auto space-y-4">
-        <div>
-          <label
-            htmlFor="visitors"
-            className="block mb-2.5 text-sm font-medium text-heading"
-          >
-            Título *{" "}
-          </label>
-          <input
-            type="text"
-            id="visitors"
-            className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
-            placeholder="Ej: El Principito"
-            required
-          />
+        <div className="flex flex-col gap-4">
+          <div id="name" className="flex flex-col gap-1.5">
+            <label
+              htmlFor="visitors"
+              className="block text-sm font-medium text-heading"
+            >
+              Título *{" "}
+            </label>
+            <input
+              type="text"
+              id="visitors"
+              className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
+              placeholder="Ej: El Principito"
+              required
+            />
+          </div>
+          <div id="author" className="flex flex-col gap-1.5">
+            <label
+              htmlFor="visitors"
+              className="block text-sm font-medium text-heading"
+            >
+              Autor *{" "}
+            </label>
+            <input
+              type="text"
+              id="visitors"
+              className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
+              placeholder="Ej: Antoine de Saint-Exupéry"
+              required
+            />
+          </div>
+          <div id="editorial" className="flex flex-col gap-1.5">
+            <label
+              htmlFor="visitors"
+              className="block text-sm font-medium text-heading"
+            >
+              Editorial *{" "}
+            </label>
+            <input
+              type="text"
+              id="visitors"
+              className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
+              placeholder="Ej: Editorial Planeta"
+              required
+            />
+          </div>
+          <div className="relative max-w-sm flex flex-col gap-1.5">
+            <label
+              htmlFor="datepicker"
+              className="block text-sm font-medium text-heading"
+            >
+              Fecha de lectura
+            </label>
+            <div className="relative">
+              <input
+                id="datepicker-autohide"
+                datepicker-autohide
+                type="text"
+                className="block w-full ps-9 pe-3  bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body"
+                placeholder="Seleccionar fecha"
+              />
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-body pointer-events-none" />
+            </div>
+          </div>
         </div>
+
         <div>
-          <label
-            htmlFor="visitors"
-            className="block mb-2.5 text-sm font-medium text-heading"
-          >
-            Autor *{" "}
-          </label>
-          <input
-            type="text"
-            id="visitors"
-            className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
-            placeholder="Ej: Antoine de Saint-Exupéry"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="visitors"
-            className="block mb-2.5 text-sm font-medium text-heading"
-          >
-            Editorial *{" "}
-          </label>
-          <input
-            type="text"
-            id="visitors"
-            className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body"
-            placeholder="Ej: Editorial Planeta"
-            required
-          />
-        </div>
-        <div>
+          {/*Reseña*/}
           <label
             htmlFor="message"
             className="block mb-2.5 text-sm font-medium text-heading"
