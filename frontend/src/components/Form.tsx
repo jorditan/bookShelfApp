@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Download } from "lucide-react";
-import { Datepicker } from "flowbite-react";
 import EditorText from "./EditorText";
 import { NavLink } from "react-router-dom";
 import { useCreateBook } from "../hooks/useCreateBook";
-import { useNotification } from "../hooks/useNotification";
+import Sonner from "../components/Sonner";
+import { useToast } from "../hooks/useSonner";
 
 const Form = () => {
   const [form, setForm] = useState({
@@ -15,21 +15,27 @@ const Form = () => {
     readDate: "",
   });
 
+  const { visible, message, type, showToast, hideToast } = useToast(3000);
+
   const { submitBook, loading, err } = useCreateBook();
-  const { handleNotification } = useNotification();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    await submitBook({
-      title: form.title,
-      author: form.author,
-      publisher: form.publisher,
-      review: form.review,
-      read_date: form.readDate,
-      id_book: 0,
-    });
-    handleNotification();
+    try {
+      await submitBook({
+        title: form.title,
+        author: form.author,
+        publisher: form.publisher,
+        review: form.review,
+        read_date: form.readDate,
+        id_book: 0,
+      });
+      showToast("Libro creado con éxito");
+    } catch (error) {
+      showToast("Error al crear el libro", "error");
+      console.log(error, err);
+    }
   }
   return (
     <>
@@ -90,16 +96,34 @@ const Form = () => {
             >
               Fecha de lectura
             </label>
-            <Datepicker
-              id="readingDate"
-              placeholder="Seleccionar fecha"
-              language="es"
-              weekStart={1}
-              showClearButton
-              labelClearButton="Limpiar"
-              showTodayButton
-              labelTodayButton="Hoy"
-            />
+            <div className="relative max-w-sm">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-body"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"
+                  />
+                </svg>
+              </div>
+              <input
+                id="datepicker-autohide"
+                datepicker-autohide
+                type="text"
+                className="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body"
+                placeholder="Select date"
+              />
+            </div>
           </div>
         </div>
 
@@ -149,6 +173,12 @@ const Form = () => {
           </div>
         </div>
       </form>
+      <Sonner
+        visible={visible}
+        message={message}
+        type={type}
+        onClose={hideToast}
+      />
     </>
   );
 };

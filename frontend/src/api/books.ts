@@ -15,3 +15,12 @@ export async function createBook(payload: createBookPayload) {
 
   return res.json();
 }
+
+export async function deleteBookById(id: number) {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/book/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to delete book");
+  }
+}

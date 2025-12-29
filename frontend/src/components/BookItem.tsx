@@ -1,7 +1,16 @@
-import { ArrowRight, Building2, Calendar, CircleUser } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  Calendar,
+  CircleUser,
+  Edit2Icon,
+  Trash2,
+} from "lucide-react";
 import { Tooltip } from "flowbite-react";
 import type { Book } from "../types/book-interface";
 import React from "react";
+import ButtonIcon from "./ButtonIcon";
+import { useDeleteBook } from "../hooks/useDeleteBook";
 
 const formatDate = (input: string | Date | undefined): string => {
   if (!input) return "";
@@ -26,6 +35,8 @@ const formatDate = (input: string | Date | undefined): string => {
 };
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
+  const { deleteBook } = useDeleteBook();
+
   return (
     <div className="bg-neutral-primary-soft hover:border-brand hover:shadow-md transition-all delay-100 block max-w-sm min-w-md p-6 border border-default rounded-base shadow-xs hover:cursor-pointer">
       <a href="#">
@@ -35,11 +46,22 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
           alt={book.title}
         />
       </a>
-      <a href="#">
-        <h5 className="mt-6 font-mono mb-2 text-2xl font-semibold tracking-tight text-heading">
+      <div className="flex justify-between mt-6 mb-2 items-center">
+        <h5 className="font-mono text-2xl font-semibold tracking-tight text-heading">
           {book.title}
         </h5>
-      </a>
+        <div id="icons" className="flex gap-1">
+          <Tooltip content="Eliminar libro" placement="top">
+            <ButtonIcon
+              onClick={() => deleteBook(book.id_book)}
+              icon={<Trash2 className="w-4 h-4" />}
+            />
+          </Tooltip>
+          <Tooltip content="Editar libro" placement="top">
+            <ButtonIcon icon={<Edit2Icon className="w-4 h-4" />} />
+          </Tooltip>
+        </div>
+      </div>
       <div className="flex gap-2 flex-col">
         <p className="text-body">
           <CircleUser className="w-4 h-4 inline-block mr-1" />

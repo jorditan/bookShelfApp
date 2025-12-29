@@ -27,7 +27,7 @@ func main() {
 	// Crear el table si no existe
 	q := `
 		CREATE TABLE IF NOT EXISTS book (
-			id_book SERIALA PRIMARY KEY NOT NULL,
+			id_book SERIAL PRIMARY KEY,
 			title TEXT NOT NULL,
 			author TEXT NOT NULL,
 			publisher TEXT NOT NULL,

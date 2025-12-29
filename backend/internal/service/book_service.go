@@ -100,6 +100,10 @@ func (s *Service) CreateBook(book *model.Book) (*model.Book, error) {
 		return nil, ErrTitleRequired
 	}
 
+	if book.ReadDate != nil && *book.ReadDate == "" {
+		book.ReadDate = nil
+	}
+
 	if book.Author == "" {
 		return nil, ErrAuthorRequired
 	}
