@@ -4,6 +4,6 @@ export interface Book {
   author: string;
   publisher: string;
   review?: string;
-  price?: number;
+  rating?: number;
   read_date?: string;
 }

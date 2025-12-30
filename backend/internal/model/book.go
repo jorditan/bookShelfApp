@@ -8,6 +8,6 @@ type Book struct {
 	Author    string   `json:"author"`
 	Publisher string   `json:"publisher"`
 	Review    *string  `json:"review"`
-	Price     *float64 `json:"price"`
+	Rating    *float64 `json:"rating"`
 	ReadDate  *string  `json:"read_date"`
 }

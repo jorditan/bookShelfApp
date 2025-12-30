@@ -9,7 +9,6 @@ const HomeView = () => {
     fetch("http://localhost:8080/books")
       .then((response) => response.json())
       .then((data: Book[]) => {
-        console.log(data);
         useBookStore.getState().setBooks(data);
       })
       .catch((error) => console.error("Error fetching books:", error));

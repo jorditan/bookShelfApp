@@ -108,9 +108,6 @@ func (s *Service) CreateBook(book *model.Book) (*model.Book, error) {
 		return nil, ErrAuthorRequired
 	}
 
-	if book.Publisher == "" {
-		return nil, ErrPublisherRequired
-	}
 
 	// Se delega la persistencia al store
 	return s.store.Create(book)

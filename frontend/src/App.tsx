@@ -4,6 +4,7 @@ import { initFlowbite } from "flowbite";
 import Navbar from "./components/Navbar";
 import HomeView from "./views/HomeView";
 import FormView from "./views/FormView";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   useEffect(() => {
@@ -13,6 +14,7 @@ function App() {
   return (
     <>
       <Navbar />
+      <Toaster position="bottom-center" />
       <main className="pt-24 px-8">
         <Routes>
           <Route path="/" element={<HomeView />} />

@@ -1,29 +1,26 @@
 import React, { useState } from "react";
 import { Calendar, Download } from "lucide-react";
 import EditorText from "./EditorText";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useCreateBook } from "../hooks/useCreateBook";
-import Sonner from "../components/Sonner";
-import { useToast } from "../hooks/useSonner";
+import toast from "react-hot-toast";
 
 const Form = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
     author: "",
     publisher: "",
+    rating: 0,
     review: "",
     readDate: "",
   });
 
   const formatDateToISO = (date: string | null) => {
     if (!date) return null;
-
-    // date comes as "29/12/2025"
     const [day, month, year] = date.split("/");
     return `${year}-${month}-${day}`;
   };
-
-  const { visible, message, type, showToast, hideToast } = useToast(3000);
 
   const { submitBook, loading, err } = useCreateBook();
 
@@ -36,13 +33,13 @@ const Form = () => {
         author: form.author,
         publisher: form.publisher,
         review: form.review,
+        rating: form.rating,
         read_date: formatDateToISO(form.readDate),
         id_book: 0,
       });
-      window.location.href = "/";
-      showToast("Libro creado con éxito");
+      navigate("/");
     } catch (error) {
-      showToast("Error al crear el libro", "error");
+      toast.error("Error al crear el libro");
       console.log(error, err);
     }
   }
@@ -87,7 +84,7 @@ const Form = () => {
               htmlFor="visitors"
               className="block text-sm font-medium text-heading"
             >
-              Editorial *{" "}
+              Editorial{" "}
             </label>
             <input
               onChange={(e) => setForm({ ...form, publisher: e.target.value })}
@@ -95,7 +92,6 @@ const Form = () => {
               id="visitors"
               className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
               placeholder="Ej: Editorial Planeta"
-              required
             />
           </div>
           <div className="relative max-w-sm flex flex-col gap-1.5">
@@ -117,6 +113,35 @@ const Form = () => {
                 className="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body"
                 placeholder="Select date"
               />
+            </div>
+          </div>
+
+          <div className="relative mb-6 h-auto">
+            <label
+              htmlFor="labels-range-input text-body"
+              className="block text-sm font-medium text-heading"
+            >
+              Calificación
+            </label>
+            <input
+              id="labels-range-input"
+              type="range"
+              onChange={(e) =>
+                setForm({ ...form, rating: parseFloat(e.target.value) })
+              }
+              value={form.rating}
+              min="0"
+              max="5"
+              step="0.5"
+              className="w-full h-2 bg-neutral-quaternary rounded-full appearance-none cursor-pointer"
+            />
+            <div className="flex justify-between text-xs text-body -bottom-2 relative ">
+              <span>0</span>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
             </div>
           </div>
         </div>
@@ -170,12 +195,6 @@ const Form = () => {
           </div>
         </div>
       </form>
-      <Sonner
-        visible={visible}
-        message={message}
-        type={type}
-        onClose={hideToast}
-      />
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createBook } from "../api/books";
 import type { createBookPayload } from "../types/createBookPayload";
+import toast from "react-hot-toast";
 
 export const useCreateBook = () => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ export const useCreateBook = () => {
       setError(null);
 
       const created = await createBook(payload);
+      toast.success("Libro creado con éxito");
       return created;
     } catch (err) {
       setError("Something went wrong");

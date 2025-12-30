@@ -4,6 +4,7 @@ import {
   Calendar,
   CircleUser,
   Edit2Icon,
+  Star,
   Trash2,
 } from "lucide-react";
 import { Tooltip } from "flowbite-react";
@@ -56,11 +57,22 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
         </div>
       </div>
       <div className="flex gap-2 flex-col text-body">
-        <div className="flex gap-1">
-          <Tooltip content="Autor" placement="top">
-            <CircleUser className="w-4 h-4 inline-block mr-1" />
-          </Tooltip>
-          <p className="text-body">{book.author}</p>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-1 items-center">
+            <Tooltip content="Autor" placement="top">
+              <CircleUser className="w-4 h-4 inline-block mr-1" />
+            </Tooltip>
+            <div></div>
+            <p className="text-body">{book.author}</p>
+          </div>
+          <div>
+            {book.rating !== undefined && (
+              <div className="flex gap-1 items-center">
+                <Star className="w-4 fill-current h-4 inline-block text-body" />
+                <span className="text-body">{book.rating}/5</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex justify-between pb-4">
           <div className="flex gap-1 items-center">
@@ -72,6 +84,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
               <Calendar className="w-4 h-4 inline-block text-body" />
             </Tooltip>
             <small className="text-body block">
+              {!book.read_date ? "No especificada" : ""}
               {formatDate(book.read_date)}
             </small>
           </div>
@@ -80,7 +93,10 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
             <Tooltip content="Editorial" placement="top">
               <Building2 className="w-4 h-4 inline-block text-body" />
             </Tooltip>
-            <small className="text-body">{book.publisher}</small>
+            <small className="text-body">
+              {!book.publisher ? "No especificada" : ""}
+              {book.publisher}
+            </small>
           </div>
         </div>
       </div>

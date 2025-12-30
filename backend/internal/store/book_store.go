@@ -79,7 +79,7 @@ func (s *store) GetAll(limit, offset int, author, title string) ([]*model.Book, 
 
 	// Consulta SQL para obtener todos los libros
 	q := `SELECT 
-		id_book, title, author, price, publisher, review,read_date 
+		id_book, title, author, rating, publisher, review,read_date 
 	FROM book
 	`
 
@@ -127,7 +127,7 @@ func (s *store) GetAll(limit, offset int, author, title string) ([]*model.Book, 
 			&b.ID,
 			&b.Title,
 			&b.Author,
-			&b.Price,
+			&b.Rating,
 			&b.Publisher,
 			&b.Review,
 			&b.ReadDate,
@@ -151,7 +151,7 @@ func (s *store) GetAll(limit, offset int, author, title string) ([]*model.Book, 
 func (s *store) GetById(id int) (*model.Book, error) {
 
 	// Consulta SQL con parámetro
-	q := `SELECT id_book, title, author, price, publisher, review, read_date FROM book WHERE id_book = $1`
+	q := `SELECT id_book, title, author, rating, publisher, review, read_date FROM book WHERE id_book = $1`
 
 	// Se inicializa el struct donde se cargará el resultado
 	book := &model.Book{}
@@ -161,7 +161,7 @@ func (s *store) GetById(id int) (*model.Book, error) {
 		&book.ID,
 		&book.Title,
 		&book.Author,
-		&book.Price,
+		&book.Rating,
 		&book.Publisher,
 		&book.Review,
 		&book.ReadDate,
@@ -182,7 +182,7 @@ func (s *store) GetById(id int) (*model.Book, error) {
 // Create inserta un nuevo libro en la base de datos.
 func (s *store) Create(book *model.Book) (*model.Book, error) {
 	q := `
-		INSERT INTO book (title, author, publisher, review, price, read_date) 
+		INSERT INTO book (title, author, publisher, review, rating, read_date) 
 		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id_book
 	`
@@ -193,7 +193,7 @@ func (s *store) Create(book *model.Book) (*model.Book, error) {
 		book.Author,
 		book.Publisher,
 		book.Review,
-		book.Price,
+		book.Rating,
 		book.ReadDate,
 	).Scan(&book.ID)
 
@@ -212,10 +212,10 @@ func (s *store) Create(book *model.Book) (*model.Book, error) {
 func (s *store) Update(id int, book *model.Book) (*model.Book, error) {
 
 	// Consulta SQL de actualización
-	q := `UPDATE book SET title = $1, author = $2, publisher = $3, review = $4, price = $5, read_date = $6 WHERE id_book = $7`
+	q := `UPDATE book SET title = $1, author = $2, publisher = $3, review = $4, rating = $5, read_date = $6 WHERE id_book = $7`
 
 	// Ejecuta la actualización
-	_, err := s.db.Exec(q, book.Title, book.Author, book.Publisher, book.Review, book.Price, book.ReadDate, id)
+	_, err := s.db.Exec(q, book.Title, book.Author, book.Publisher, book.Review, book.Rating, book.ReadDate, id)
 	if err != nil {
 		return nil, err
 	}

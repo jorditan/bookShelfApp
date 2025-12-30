@@ -3,6 +3,7 @@ export interface createBookPayload {
   title: string;
   author: string;
   publisher: string;
+  rating?: number;
   review?: string;
   price?: number;
   read_date?: string | null;

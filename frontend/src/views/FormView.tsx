@@ -13,6 +13,7 @@ const FormView = () => {
           <h1 className="text-3xl font-bold text-heading font-sans">
             Añadir reseña de un libro
           </h1>
+          <small className="text-body">* campos obligatorios</small>
         </div>
         <Form />
       </section>

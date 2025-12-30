@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { deleteBookById } from "../api/books";
 import useBookStore from "../store/useBookStore";
-import { useToast } from "./useSonner";
+import toast from "react-hot-toast";
 
 export const useDeleteBook = () => {
   // Placeholder for delete book logic
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const { showToast } = useToast(3000);
 
   async function deleteBook(id: number): Promise<void> {
     try {
@@ -17,8 +15,7 @@ export const useDeleteBook = () => {
 
       await deleteBookById(id);
       useBookStore.getState().removeBookById(id);
-      console.log("Libro elimiinado con éxito");
-      showToast("Libro creado con éxito");
+      toast("Libro eliminado con éxito", { icon: "🗑️" });
     } catch (err) {
       setError("Something went wrong");
       throw err;
