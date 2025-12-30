@@ -39,14 +39,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
 
   return (
     <div className="bg-neutral-primary-soft hover:border-brand hover:shadow-md transition-all delay-100 block max-w-sm min-w-md p-6 border border-default rounded-base shadow-xs hover:cursor-pointer">
-      <a href="#">
-        <img
-          className="rounded-base"
-          src="/docs/images/blog/image-1.jpg"
-          alt={book.title}
-        />
-      </a>
-      <div className="flex justify-between mt-6 mb-2 items-center">
+      <div className="flex justify-between mt-2 mb-2 items-center">
         <h5 className="font-mono text-2xl font-semibold tracking-tight text-heading">
           {book.title}
         </h5>
@@ -62,11 +55,13 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
           </Tooltip>
         </div>
       </div>
-      <div className="flex gap-2 flex-col">
-        <p className="text-body">
-          <CircleUser className="w-4 h-4 inline-block mr-1" />
-          {book.author}
-        </p>
+      <div className="flex gap-2 flex-col text-body">
+        <div className="flex gap-1">
+          <Tooltip content="Autor" placement="top">
+            <CircleUser className="w-4 h-4 inline-block mr-1" />
+          </Tooltip>
+          <p className="text-body">{book.author}</p>
+        </div>
         <div className="flex justify-between pb-4">
           <div className="flex gap-1 items-center">
             <Tooltip

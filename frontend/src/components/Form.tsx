@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Download } from "lucide-react";
+import { Calendar, Download } from "lucide-react";
 import EditorText from "./EditorText";
 import { NavLink } from "react-router-dom";
 import { useCreateBook } from "../hooks/useCreateBook";
@@ -15,6 +15,14 @@ const Form = () => {
     readDate: "",
   });
 
+  const formatDateToISO = (date: string | null) => {
+    if (!date) return null;
+
+    // date comes as "29/12/2025"
+    const [day, month, year] = date.split("/");
+    return `${year}-${month}-${day}`;
+  };
+
   const { visible, message, type, showToast, hideToast } = useToast(3000);
 
   const { submitBook, loading, err } = useCreateBook();
@@ -28,9 +36,10 @@ const Form = () => {
         author: form.author,
         publisher: form.publisher,
         review: form.review,
-        read_date: form.readDate,
+        read_date: formatDateToISO(form.readDate),
         id_book: 0,
       });
+      window.location.href = "/";
       showToast("Libro creado con éxito");
     } catch (error) {
       showToast("Error al crear el libro", "error");
@@ -98,27 +107,12 @@ const Form = () => {
             </label>
             <div className="relative max-w-sm">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-body"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"
-                  />
-                </svg>
+                <Calendar className="w-4 h-4 text-body" />
               </div>
               <input
                 id="datepicker-autohide"
-                datepicker-autohide
+                onChange={(e) => setForm({ ...form, readDate: e.target.value })}
+                datepicker-autohide="true"
                 type="text"
                 className="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body"
                 placeholder="Select date"
@@ -135,7 +129,10 @@ const Form = () => {
           >
             Reseña
           </label>
-          <EditorText placeholder="Escribe tu análisis aquí..." />
+          <EditorText
+            onChange={(value) => setForm({ ...form, review: value })}
+            placeholder="Escribe tu análisis aquí..."
+          />
           <div className="flex flex-col gap-2">
             <div className="w-full flex gap-2 justify-center bg-neutral-secondary items-center border-dashed px-1 py-2 rounded-base border border-gray-400  dark:border-gray-700 hover:bg-neutral-secondary-soft hover:border-brand hover:text-heading cursor-pointer">
               <Download className="w-3 h-3 text-body" />
@@ -166,7 +163,7 @@ const Form = () => {
 
             <button
               type="submit"
-              className="text-white hover:cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+              className={`${loading ? "opacity-50 cursor-not-allowed" : ""} text-white hover:cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none`}
             >
               Guardar libro
             </button>
