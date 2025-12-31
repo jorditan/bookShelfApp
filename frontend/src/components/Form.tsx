@@ -4,6 +4,7 @@ import EditorText from "./EditorText";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useCreateBook } from "../hooks/useCreateBook";
 import toast from "react-hot-toast";
+import Alert from "./Alert";
 
 const Form = () => {
   const navigate = useNavigate();
@@ -111,9 +112,10 @@ const Form = () => {
                 datepicker-autohide="true"
                 type="text"
                 className="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body"
-                placeholder="Select date"
+                placeholder="Seleccione una fecha"
               />
             </div>
+            <small className="text-body">¿Cuando terminaste de leerlo?</small>
           </div>
 
           <div className="relative mb-6 h-auto">
@@ -121,7 +123,7 @@ const Form = () => {
               htmlFor="labels-range-input text-body"
               className="block text-sm font-medium text-heading"
             >
-              Calificación
+              Calificación: {form.rating}/5
             </label>
             <input
               id="labels-range-input"
@@ -148,31 +150,18 @@ const Form = () => {
 
         <div>
           {/*Reseña*/}
-          <label
-            htmlFor="message"
-            className="block mb-2.5 text-sm font-medium text-heading"
-          >
-            Reseña
-          </label>
           <EditorText
+            label="Reseña"
+            maxLenght={1080}
             onChange={(value) => setForm({ ...form, review: value })}
             placeholder="Escribe tu análisis aquí..."
           />
-          <div className="flex flex-col gap-2">
-            <div className="w-full flex gap-2 justify-center bg-neutral-secondary items-center border-dashed px-1 py-2 rounded-base border border-gray-400  dark:border-gray-700 hover:bg-neutral-secondary-soft hover:border-brand hover:text-heading cursor-pointer">
-              <Download className="w-3 h-3 text-body" />
-              <small className="text-body">
-                Haz click para subir una imágen del libro
-              </small>
-            </div>
-            <button
-              type="button"
-              className="text-body w-fit flex gap-2 bg-neutral-primary-soft border border-default hover:bg-neutral-secondary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary-soft shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-            >
-              <Download className="w-4 h-4" />
-              Subir imágen
-            </button>
-          </div>
+
+          <Alert
+            title="Información:"
+            text="Podrás editar todos estos datos más tarde."
+            type="info"
+          />
         </div>
         <div className="flex w-full justify-end">
           <div className="flex gap-2">

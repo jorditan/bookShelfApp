@@ -58,7 +58,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
       </div>
       <div className="flex gap-2 flex-col text-body">
         <div className="flex justify-between items-center">
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-0.5 items-center">
             <Tooltip content="Autor" placement="top">
               <CircleUser className="w-4 h-4 inline-block mr-1" />
             </Tooltip>
