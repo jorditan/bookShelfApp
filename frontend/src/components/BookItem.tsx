@@ -3,7 +3,6 @@ import {
   Building2,
   Calendar,
   CircleUser,
-  Edit2Icon,
   Star,
   Trash2,
 } from "lucide-react";
@@ -12,6 +11,7 @@ import type { Book } from "../types/book-interface";
 import React from "react";
 import ButtonIcon from "./ButtonIcon";
 import { useDeleteBook } from "../hooks/useDeleteBook";
+import Modal from "./Modal";
 
 const formatDate = (input: string | Date | undefined): string => {
   if (!input) return "";
@@ -50,9 +50,6 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
               onClick={() => deleteBook(book.id_book)}
               icon={<Trash2 className="w-4 h-4" />}
             />
-          </Tooltip>
-          <Tooltip content="Editar libro" placement="top">
-            <ButtonIcon icon={<Edit2Icon className="w-4 h-4" />} />
           </Tooltip>
         </div>
       </div>
@@ -100,13 +97,13 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
           </div>
         </div>
       </div>
-      <a
-        href="#"
-        className="inline-flex items-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-      >
-        Leer más
-        <ArrowRight className="w-4 h-4 ml-2" />
-      </a>
+      <Modal
+        buttonToggleText="Leer más"
+        modalHeader="Editar libro"
+        submitButtonText="Guardar cambios"
+        icon={<ArrowRight className="w-4 h-4" />}
+        cancelButtonText="Cancelar"
+      />
     </div>
   );
 };
