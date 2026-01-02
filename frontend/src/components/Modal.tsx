@@ -17,6 +17,7 @@ const Modal: React.FC<Props> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const modalId = useMemo(
+    // eslint-disable-next-line react-hooks/purity
     () => `crud-modal-${Math.random().toString(36).slice(2, 8)}`,
     []
   );
@@ -51,8 +52,8 @@ const Modal: React.FC<Props> = ({
           className="relative p-4 w-full max-w-lg max-h-full"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6 max-h-[60vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+          <div className="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6 max-h-[75vh] overflow-y-auto">
+            <div className="flex overflow-y-auto items-center justify-between border-b border-default pb-4 md:pb-5">
               <h3 className="text-lg font-medium text-heading">
                 {modalHeader}
               </h3>
@@ -82,7 +83,7 @@ const Modal: React.FC<Props> = ({
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <Form />
+            {<Form />}
           </div>
         </div>
       </div>

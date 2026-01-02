@@ -1,9 +1,30 @@
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const SearchInput = () => {
+interface Props {
+  onSearch: (query: string) => void;
+}
+
+const SearchInput = ({ onSearch }: Props) => {
+  const [value, setValue] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch(value.trim());
+  };
+
+  useEffect(() => {
+    if (!value.trim()) return;
+
+    const timeout = setTimeout(() => {
+      onSearch(value.trim());
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [value]);
+
   return (
     <>
-      <form className="w-full mx-auto">
+      <form onSubmit={handleSubmit}>
         <label
           htmlFor="search"
           className="block mb-2.5 text-sm font-medium text-heading sr-only "
@@ -15,14 +36,15 @@ const SearchInput = () => {
             <Search className="w-4 h-4 text-body" />
           </div>
           <input
+            onChange={(e) => setValue(e.target.value)}
             type="search"
             id="search"
             className="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
             placeholder="Ingresa el título o autor del libro"
-            required
           />
           <button
-            type="button"
+            onClick={() => onSearch && onSearch(value.trim())}
+            type="submit"
             className="absolute end-1.5 bottom-1.5 text-white bg-brand hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none"
           >
             Buscar

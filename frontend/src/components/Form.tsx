@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Calendar, Download } from "lucide-react";
+import { Calendar } from "lucide-react";
 import EditorText from "./EditorText";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useCreateBook } from "../hooks/useCreateBook";
 import toast from "react-hot-toast";
 import Alert from "./Alert";
+import { useFormValidation } from "../hooks/useFormValidation";
 
 const Form = () => {
   const navigate = useNavigate();
@@ -24,9 +25,17 @@ const Form = () => {
   };
 
   const { submitBook, loading, err } = useCreateBook();
+  const { errors, validate } = useFormValidation();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    const isValid = validate(form);
+
+    if (!isValid) {
+      toast.error("Por favor completa los campos del formulario");
+      return;
+    }
 
     try {
       await submitBook({
@@ -61,8 +70,12 @@ const Form = () => {
               id="visitors"
               className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
               placeholder="Ej: El Principito"
-              required
             />
+            {errors.title && (
+              <small className="text-sm text-red-600 mt-1">
+                {errors.title}
+              </small>
+            )}
           </div>
           <div id="author" className="flex flex-col gap-1.5">
             <label
@@ -77,8 +90,12 @@ const Form = () => {
               id="visitors"
               className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
               placeholder="Ej: Antoine de Saint-Exupéry"
-              required
             />
+            {errors.author && (
+              <small className="text-sm text-red-600 mt-1">
+                {errors.author}
+              </small>
+            )}
           </div>
           <div id="editorial" className="flex flex-col gap-1.5">
             <label
@@ -152,7 +169,7 @@ const Form = () => {
           {/*Reseña*/}
           <EditorText
             label="Reseña"
-            maxLenght={1080}
+            maxLenght={2040}
             onChange={(value) => setForm({ ...form, review: value })}
             placeholder="Escribe tu análisis aquí..."
           />
@@ -163,7 +180,7 @@ const Form = () => {
             type="info"
           />
         </div>
-        <div className="flex w-full justify-end">
+        <div className="flex w-full justify-end mb-8">
           <div className="flex gap-2">
             <NavLink to="/">
               <button

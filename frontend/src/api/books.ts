@@ -24,3 +24,32 @@ export async function deleteBookById(id: number) {
     throw new Error("Failed to delete book");
   }
 }
+
+export async function searchBookByParams(params: {
+  title?: string;
+  author?: string;
+}) {
+  console.log("Searching books with params:");
+  const searchParams = new URLSearchParams();
+
+  if (params.title) {
+    searchParams.append("title", params.title);
+  }
+
+  if (params.author) {
+    searchParams.append("author", params.author);
+  }
+
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/books?${searchParams.toString()}`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to search books");
+  }
+
+  return res.json();
+}

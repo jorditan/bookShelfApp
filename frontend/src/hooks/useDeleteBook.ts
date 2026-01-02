@@ -4,7 +4,6 @@ import useBookStore from "../store/useBookStore";
 import toast from "react-hot-toast";
 
 export const useDeleteBook = () => {
-  // Placeholder for delete book logic
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
