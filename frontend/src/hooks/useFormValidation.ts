@@ -24,12 +24,8 @@ export const useFormValidation = () => {
       errors.author = "El autor es obligatorio";
     }
 
-    if (!form.publisher.trim()) {
-      errors.publisher = "La editorial es obligatoria";
-    }
-
-    if (form.rating < 0.5 || form.rating > 5) {
-      errors.rating = "La calificación debe estar entre 0.5 y 5";
+    if (form.rating < 0 || form.rating > 5) {
+      errors.rating = "La calificación debe estar entre 0 y 5";
     }
 
     if (form.readDate && !/^\d{2}\/\d{2}\/\d{4}$/.test(form.readDate)) {

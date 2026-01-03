@@ -54,16 +54,14 @@ export async function searchBookByParams(params: {
   return res.json();
 }
 
-export async function editBook(book: Book) {
-  const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/book/${book.id_book}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+export async function editBook(id: number, payload: Partial<Book>) {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/book/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
 
   if (!res.ok) {
     throw new Error("Failed to edit book");

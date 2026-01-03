@@ -1,31 +1,40 @@
 import React, { useState } from "react";
 import { Calendar } from "lucide-react";
 import EditorText from "./EditorText";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useCreateBook } from "../hooks/useCreateBook";
 import toast from "react-hot-toast";
 import Alert from "./Alert";
 import { useFormValidation } from "../hooks/useFormValidation";
 
-const Form = () => {
-  const navigate = useNavigate();
-  const [form, setForm] = useState({
-    title: "",
-    author: "",
-    publisher: "",
-    rating: 0,
-    review: "",
-    readDate: "",
+interface BookFormValues {
+  title: string;
+  author: string;
+  publisher: string;
+  rating: number;
+  review: string;
+  readDate: string;
+}
+
+interface FormProps {
+  initialValues?: Partial<BookFormValues>;
+  onSubmit: (data: BookFormValues) => Promise<void> | void;
+  submitLabel?: string;
+}
+
+const Form = ({
+  initialValues,
+  onSubmit,
+  submitLabel = "Guardar libro",
+}: FormProps) => {
+  const [form, setForm] = useState<BookFormValues>({
+    title: initialValues?.title || "",
+    author: initialValues?.author || "",
+    publisher: initialValues?.publisher || "",
+    rating: initialValues?.rating || 0,
+    review: initialValues?.review || "",
+    readDate: initialValues?.readDate || "",
   });
 
-  const formatDateToISO = (date: string | null) => {
-    if (!date) return null;
-    const [day, month, year] = date.split("/");
-    return `${year}-${month}-${day}`;
-  };
-
-  const { submitBook, loading, err } = useCreateBook();
-  const { errors, validate } = useFormValidation();
+  const { errors, validate, clearErrors } = useFormValidation();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,24 +43,13 @@ const Form = () => {
 
     if (!isValid) {
       toast.error("Por favor completa los campos del formulario");
+      setTimeout(() => {
+        clearErrors();
+      }, 4000);
       return;
     }
 
-    try {
-      await submitBook({
-        title: form.title,
-        author: form.author,
-        publisher: form.publisher,
-        review: form.review,
-        rating: form.rating,
-        read_date: formatDateToISO(form.readDate),
-        id_book: 0,
-      });
-      navigate("/");
-    } catch (error) {
-      toast.error("Error al crear el libro");
-      console.log(error, err);
-    }
+    await onSubmit(form);
   }
   return (
     <>
@@ -60,7 +58,9 @@ const Form = () => {
           <div id="name" className="flex flex-col gap-1.5">
             <label
               htmlFor="visitors"
-              className="block text-sm font-medium text-heading"
+              className={`
+                ${errors.title ? "text-red-600" : ""}
+                block text-sm font-medium text-heading`}
             >
               Título *{" "}
             </label>
@@ -68,7 +68,7 @@ const Form = () => {
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               type="text"
               id="visitors"
-              className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
+              className={`${errors.title ? "border-red-600" : "border-default-medium"} bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body`}
               placeholder="Ej: El Principito"
             />
             {errors.title && (
@@ -80,7 +80,7 @@ const Form = () => {
           <div id="author" className="flex flex-col gap-1.5">
             <label
               htmlFor="visitors"
-              className="block text-sm font-medium text-heading"
+              className={`${errors.author ? "text-red-600" : ""} block text-sm font-medium text-heading`}
             >
               Autor *{" "}
             </label>
@@ -88,7 +88,7 @@ const Form = () => {
               onChange={(e) => setForm({ ...form, author: e.target.value })}
               type="text"
               id="visitors"
-              className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
+              className={`${errors.author ? "border-red-600" : "border-default-medium"} bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body`}
               placeholder="Ej: Antoine de Saint-Exupéry"
             />
             {errors.author && (
@@ -182,21 +182,19 @@ const Form = () => {
         </div>
         <div className="flex w-full justify-end mb-8">
           <div className="flex gap-2">
-            <NavLink to="/">
-              <button
-                type="button"
-                className="text-body hover:cursor-pointer  bg-neutral-primary border border-default hover:bg-neutral-secondary-soft hover:text-heading focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-              >
-                {" "}
-                Cancelar
-              </button>
-            </NavLink>
+            <button
+              type="button"
+              className="text-body hover:cursor-pointer  bg-neutral-primary border border-default hover:bg-neutral-secondary-soft hover:text-heading focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+            >
+              {" "}
+              Cancelar
+            </button>
 
             <button
               type="submit"
-              className={`${loading ? "opacity-50 cursor-not-allowed" : ""} text-white hover:cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none`}
+              className={`"opacity-50 cursor-not-allowed" : ""} text-white hover:cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none`}
             >
-              Guardar libro
+              {submitLabel}
             </button>
           </div>
         </div>

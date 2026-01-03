@@ -1,5 +1,4 @@
 import React, { useMemo, useState, type JSX } from "react";
-import Form from "./Form";
 
 interface Props {
   buttonToggleText?: string;
@@ -8,12 +7,14 @@ interface Props {
   submitButtonText?: string;
   icon?: JSX.Element;
   cancelButtonText?: string;
+  children?: JSX.Element | JSX.Element[];
 }
 
 const Modal: React.FC<Props> = ({
   buttonToggleText = "Abrir",
   modalHeader,
   icon,
+  children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const modalId = useMemo(
@@ -83,7 +84,7 @@ const Modal: React.FC<Props> = ({
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            {<Form />}
+            {children}
           </div>
         </div>
       </div>

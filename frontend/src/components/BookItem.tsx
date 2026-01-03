@@ -12,31 +12,13 @@ import React from "react";
 import ButtonIcon from "./ButtonIcon";
 import { useDeleteBook } from "../hooks/useDeleteBook";
 import Modal from "./Modal";
-
-const formatDate = (input: string | Date | undefined): string => {
-  if (!input) return "";
-  if (input instanceof Date) {
-    const day = String(input.getUTCDate()).padStart(2, "0");
-    const month = String(input.getUTCMonth() + 1).padStart(2, "0");
-    const year = input.getUTCFullYear();
-    return `${day}/${month}/${year}`;
-  }
-  const iso = String(input);
-  const datePart = iso.split("T")[0];
-  const [y, m, d] = datePart.split("-");
-  if (y && m && d) return `${d}/${m}/${y}`;
-  const dt = new Date(iso);
-  if (!isNaN(dt.getTime())) {
-    const day = String(dt.getUTCDate()).padStart(2, "0");
-    const month = String(dt.getUTCMonth() + 1).padStart(2, "0");
-    const year = dt.getUTCFullYear();
-    return `${day}/${month}/${year}`;
-  }
-  return iso;
-};
+import Form from "./Form";
+import useBookStore from "../store/useBookStore";
+import { formatDate } from "../hooks/useFormatDate";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   const { deleteBook } = useDeleteBook();
+  const updateBook = useBookStore((state) => state.updateBook);
 
   return (
     <div className="bg-neutral-primary-soft hover:border-brand hover:shadow-md transition-all delay-100 block max-w-sm min-w-md p-6 border border-default rounded-base shadow-xs hover:cursor-pointer">
@@ -103,6 +85,20 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
         submitButtonText="Guardar cambios"
         icon={<ArrowRight className="w-4 h-4" />}
         cancelButtonText="Cancelar"
+        children={
+          <Form
+            initialValues={{
+              title: book.title,
+            }}
+            onSubmit={async (data) =>
+              await updateBook(book.id_book, {
+                ...data,
+                read_date: formatDate(data.readDate),
+              })
+            }
+            submitLabel="Guardar cambios"
+          />
+        }
       />
     </div>
   );
