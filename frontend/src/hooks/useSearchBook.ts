@@ -2,6 +2,7 @@ import { useState } from "react";
 import { searchBookByParams } from "../api/books";
 import type { Book } from "../types/book-interface";
 import useBookStore from "../store/useBookStore";
+import toast from "react-hot-toast";
 
 export const useSearchBook = () => {
   const [loading, setLoading] = useState(false);
@@ -17,9 +18,12 @@ export const useSearchBook = () => {
       setError(null);
 
       const books: Book[] = await searchBookByParams(params);
-      console.log("Books found:", books);
+      if (books.length === 0) {
+        toast("No se han encontrado libros", { icon: "📚" });
+      }
       setBooks(books);
     } catch (err) {
+      toast.error("Algo no ha salido como se esperaba");
       setError("Something went wrong");
       throw err;
     } finally {

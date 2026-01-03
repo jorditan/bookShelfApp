@@ -1,3 +1,4 @@
+import type { Book } from "../types/book-interface";
 import type { createBookPayload } from "../types/createBookPayload";
 
 export async function createBook(payload: createBookPayload) {
@@ -29,7 +30,6 @@ export async function searchBookByParams(params: {
   title?: string;
   author?: string;
 }) {
-  console.log("Searching books with params:");
   const searchParams = new URLSearchParams();
 
   if (params.title) {
@@ -49,6 +49,24 @@ export async function searchBookByParams(params: {
 
   if (!res.ok) {
     throw new Error("Failed to search books");
+  }
+
+  return res.json();
+}
+
+export async function editBook(book: Book) {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/book/${book.id_book}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to edit book");
   }
 
   return res.json();

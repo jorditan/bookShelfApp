@@ -1,17 +1,11 @@
 import { useEffect } from "react";
-import type { Book } from "../types/book-interface";
 import BookList from "../components/BookList";
 import EmptyState from "./EmptyState";
 import useBookStore from "../store/useBookStore";
 
 const HomeView = () => {
   useEffect(() => {
-    fetch("http://localhost:8080/books")
-      .then((response) => response.json())
-      .then((data: Book[]) => {
-        useBookStore.getState().setBooks(data);
-      })
-      .catch((error) => console.error("Error fetching books:", error));
+    useBookStore.getState().fetchBooks();
   }, []);
 
   const books = useBookStore((state) => state.books);
