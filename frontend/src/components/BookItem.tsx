@@ -10,14 +10,13 @@ import { Tooltip } from "flowbite-react";
 import type { Book } from "../types/book-interface";
 import React from "react";
 import ButtonIcon from "./ButtonIcon";
-import { useDeleteBook } from "../hooks/useDeleteBook";
 import Modal from "./Modal";
 import Form from "./Form";
 import useBookStore from "../store/useBookStore";
-import { formatDate } from "../hooks/useFormatDate";
+import { formatDateToISO } from "../hooks/useFormatDate";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
-  const { deleteBook } = useDeleteBook();
+  const removeBookById = useBookStore((state) => state.removeBookById);
   const updateBook = useBookStore((state) => state.updateBook);
 
   return (
@@ -29,7 +28,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
         <div id="icons" className="flex gap-1">
           <Tooltip content="Eliminar libro" placement="top">
             <ButtonIcon
-              onClick={() => deleteBook(book.id_book)}
+              onClick={() => removeBookById(book.id_book)}
               icon={<Trash2 className="w-4 h-4" />}
             />
           </Tooltip>
@@ -63,8 +62,9 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
               <Calendar className="w-4 h-4 inline-block text-body" />
             </Tooltip>
             <small className="text-body block">
-              {!book.read_date ? "No especificada" : ""}
-              {formatDate(book.read_date)}
+              {!book.read_date
+                ? "No especificada"
+                : formatDateToISO(book.read_date ?? null)}
             </small>
           </div>
 
@@ -87,13 +87,11 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
         cancelButtonText="Cancelar"
         children={
           <Form
-            initialValues={{
-              title: book.title,
-            }}
+            initialValues={book}
             onSubmit={async (data) =>
               await updateBook(book.id_book, {
                 ...data,
-                read_date: formatDate(data.readDate),
+                read_date: formatDateToISO(data.readDate),
               })
             }
             submitLabel="Guardar cambios"

@@ -66,6 +66,7 @@ const Form = ({
             </label>
             <input
               onChange={(e) => setForm({ ...form, title: e.target.value })}
+              value={form.title}
               type="text"
               id="visitors"
               className={`${errors.title ? "border-red-600" : "border-default-medium"} bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body`}
@@ -85,6 +86,7 @@ const Form = ({
               Autor *{" "}
             </label>
             <input
+              value={form.author}
               onChange={(e) => setForm({ ...form, author: e.target.value })}
               type="text"
               id="visitors"
@@ -107,6 +109,7 @@ const Form = ({
             <input
               onChange={(e) => setForm({ ...form, publisher: e.target.value })}
               type="text"
+              value={form.publisher}
               id="visitors"
               className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 shadow-xs placeholder:text-body"
               placeholder="Ej: Editorial Planeta"
@@ -124,6 +127,7 @@ const Form = ({
                 <Calendar className="w-4 h-4 text-body" />
               </div>
               <input
+                value={form.readDate}
                 id="datepicker-autohide"
                 onChange={(e) => setForm({ ...form, readDate: e.target.value })}
                 datepicker-autohide="true"
@@ -143,12 +147,12 @@ const Form = ({
               Calificación: {form.rating}/5
             </label>
             <input
+              value={form.rating}
               id="labels-range-input"
               type="range"
               onChange={(e) =>
                 setForm({ ...form, rating: parseFloat(e.target.value) })
               }
-              value={form.rating}
               min="0"
               max="5"
               step="0.5"
@@ -170,6 +174,7 @@ const Form = ({
           <EditorText
             label="Reseña"
             maxLenght={2040}
+            value={form.review}
             onChange={(value) => setForm({ ...form, review: value })}
             placeholder="Escribe tu análisis aquí..."
           />

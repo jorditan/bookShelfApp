@@ -5,6 +5,7 @@ interface Props {
   placeholder?: string;
   maxLenght?: number;
   onChange?: (value: string) => void;
+  value?: string;
 }
 
 const EditorText: React.FC<Props> = ({
@@ -12,12 +13,13 @@ const EditorText: React.FC<Props> = ({
   placeholder,
   onChange,
   maxLenght,
+  value,
 }) => {
-  const [value, setValue] = useState("");
+  const [internalValue, setInternalValue] = useState(value || "");
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const next = e.target.value;
-    setValue(next);
+    setInternalValue(next);
     onChange?.(next);
   };
 
@@ -31,7 +33,7 @@ const EditorText: React.FC<Props> = ({
           {label}
         </label>
         <small className="text-body">
-          {value.length}/{maxLenght}
+          {internalValue.length}/{maxLenght}
         </small>
       </div>
       <div className="w-full mb-4 overflow-hidden border border-default-medium rounded-base bg-neutral-secondary-medium shadow-xs">

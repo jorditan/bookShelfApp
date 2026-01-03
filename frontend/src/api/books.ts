@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import type { Book } from "../types/book-interface";
 import type { createBookPayload } from "../types/createBookPayload";
 
@@ -13,6 +14,8 @@ export async function createBook(payload: createBookPayload) {
   if (!res.ok) {
     throw new Error("Failed to create book");
   }
+
+  toast.success("Libro creado con éxito");
 
   return res.json();
 }

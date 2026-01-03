@@ -5,5 +5,5 @@ export interface Book {
   publisher: string;
   review?: string;
   rating?: number;
-  read_date?: string;
+  read_date?: string | null;
 }

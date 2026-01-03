@@ -1,13 +1,15 @@
 import { create } from "zustand";
 import type { Book } from "../types/book-interface";
-import { editBook } from "../api/books";
+import { createBook, deleteBookById, editBook } from "../api/books";
+import { toast } from "react-hot-toast/headless";
+import type { createBookPayload } from "../types/createBookPayload";
 
 type bookStore = {
   books: Book[];
-  addBook: (book: Book) => void;
-  removeBookById: (id: number) => void;
+  createBook: (book: Book) => void;
   setBooks: (books: Book[]) => void;
   updateBook: (id: number, data: Partial<Book>) => Promise<void>;
+  removeBookById: (id: number) => void;
   fetchBooks: () => Promise<void>;
   loading?: string | boolean;
   error?: string | null;
@@ -16,15 +18,20 @@ type bookStore = {
 const useBookStore = create<bookStore>((set) => ({
   books: [],
 
-  addBook: (book) =>
-    set((state) => ({
-      books: [...state.books, book],
-    })),
+  createBook: async (payload: createBookPayload) => {
+    try {
+      set({ loading: true, error: null });
 
-  removeBookById: (id) =>
-    set((state) => ({
-      books: state.books.filter((book) => book.id_book !== id),
-    })),
+      const created = await createBook(payload);
+      toast.success("Libro creado con éxito");
+      return created;
+    } catch (err) {
+      set({ error: "Something went wrong" });
+      throw err;
+    } finally {
+      set({ loading: false });
+    }
+  },
 
   setBooks: (books) => set({ books }),
 
@@ -61,6 +68,25 @@ const useBookStore = create<bookStore>((set) => ({
     } catch (err) {
       console.log(err);
       set({ error: "Something went wrong" });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  removeBookById: async (id: number) => {
+    try {
+      set({ loading: true, error: null });
+
+      await deleteBookById(id);
+      useBookStore
+        .getState()
+        .setBooks(
+          useBookStore.getState().books.filter((book) => book.id_book !== id)
+        );
+      toast("Libro eliminado con éxito", { icon: "🗑️" });
+    } catch (err) {
+      set({ error: "Something went wrong" });
+      throw err;
     } finally {
       set({ loading: false });
     }
