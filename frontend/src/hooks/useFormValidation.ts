@@ -28,7 +28,7 @@ export const useFormValidation = () => {
       errors.rating = "La calificación debe estar entre 0 y 5";
     }
 
-    if (form.readDate && !/^\d{2}\/\d{2}\/\d{4}$/.test(form.readDate)) {
+    if (form.readDate && !/^\d{4}-\d{2}-\d{2}$/.test(form.readDate)) {
       errors.readDate = "Formato de fecha inválido";
     }
 

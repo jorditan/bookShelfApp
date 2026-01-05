@@ -21,12 +21,10 @@ const Navbar = () => {
         </Link>
 
         <div className="w-md">
-          {books.length > 0 && (
-            <SearchInput
-              placeholder="Buscar libro por título..."
-              onSearch={(query) => searchBook && searchBook({ title: query })}
-            />
-          )}
+          <SearchInput
+            placeholder="Buscar libro por título..."
+            onSearch={(query) => searchBook && searchBook({ title: query })}
+          />
         </div>
 
         <div className="inline-flex h-full md:order-2 gap-4 space-x-3 md:space-x-0 rtl:space-x-reverse">

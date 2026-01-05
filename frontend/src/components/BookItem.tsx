@@ -13,7 +13,7 @@ import ButtonIcon from "./ButtonIcon";
 import Modal from "./Modal";
 import Form from "./Form";
 import useBookStore from "../store/useBookStore";
-import { formatDate, formatDateToISO } from "../hooks/useFormatDate";
+import { formatDate } from "../hooks/useFormatDate";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   const removeBookById = useBookStore((state) => state.removeBookById);
@@ -64,7 +64,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
             <small className="text-body block">
               {!book.read_date
                 ? "No especificada"
-                : formatDate(book.read_date ?? null)}
+                : (formatDate(book.read_date) ?? null)}
             </small>
           </div>
 
@@ -86,15 +86,14 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
       >
         {(close) => (
           <Form
-            initialValues={book}
+            initialValues={{ ...book, readDate: book.read_date ?? "" }}
             onSubmit={async (data) => {
               await updateBook(book.id_book, {
                 ...data,
-                read_date: formatDateToISO(data.readDate),
               });
-              close(); // ✅ close modal after save
+              close();
             }}
-            onCancel={close} // ✅ cancel button closes modal
+            onCancel={close}
             submitLabel="Guardar cambios"
           />
         )}

@@ -2,7 +2,6 @@ import { ArrowLeft } from "lucide-react";
 import Form from "../components/Form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { createBook } from "../api/books";
-import { formatDateToISO } from "../hooks/useFormatDate";
 
 const FormView = () => {
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ const FormView = () => {
           onSubmit={async (data) => {
             await createBook({
               ...data,
-              read_date: formatDateToISO(data.readDate),
+              read_date: data.readDate || null,
               id_book: 0,
             });
             navigate("/");

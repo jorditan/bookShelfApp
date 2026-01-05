@@ -132,13 +132,17 @@ const Form = ({
                 value={form.readDate}
                 id="datepicker-autohide"
                 onChange={(e) => setForm({ ...form, readDate: e.target.value })}
-                datepicker-autohide="true"
-                type="text"
+                type="date"
                 className="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 shadow-xs placeholder:text-body"
                 placeholder="Seleccione una fecha"
               />
             </div>
-            <small className="text-body">¿Cuando terminaste de leerlo?</small>
+            <small className="text-body">¿Cuándo terminaste de leerlo?</small>
+            {errors.readDate && (
+              <small className="text-sm text-red-600 mt-1">
+                {errors.readDate}
+              </small>
+            )}
           </div>
 
           <div className="relative mb-6 h-auto">
@@ -199,6 +203,7 @@ const Form = ({
             </button>
 
             <button
+              disabled={false}
               type="submit"
               className={`"opacity-50 cursor-not-allowed" : ""} text-white hover:cursor-pointer bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none`}
             >
