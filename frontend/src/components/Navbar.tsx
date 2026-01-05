@@ -6,10 +6,9 @@ import { BookAIcon, SunMoon } from "lucide-react";
 import SearchInput from "./SearchInput";
 import { Tooltip } from "flowbite-react";
 import useBookStore from "../store/useBookStore";
-import { useSearchBook } from "../hooks/useSearchBook";
 
 const Navbar = () => {
-  const { searchBook } = useSearchBook();
+  const { searchBook } = useBookStore();
   const { books } = useBookStore();
   return (
     <nav className="bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default">
@@ -22,7 +21,12 @@ const Navbar = () => {
         </Link>
 
         <div className="w-md">
-          <SearchInput onSearch={(query) => searchBook({ title: query })} />
+          {books.length > 0 && (
+            <SearchInput
+              placeholder="Buscar libro por título..."
+              onSearch={(query) => searchBook && searchBook({ title: query })}
+            />
+          )}
         </div>
 
         <div className="inline-flex h-full md:order-2 gap-4 space-x-3 md:space-x-0 rtl:space-x-reverse">

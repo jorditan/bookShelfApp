@@ -13,7 +13,7 @@ import ButtonIcon from "./ButtonIcon";
 import Modal from "./Modal";
 import Form from "./Form";
 import useBookStore from "../store/useBookStore";
-import { formatDateToISO } from "../hooks/useFormatDate";
+import { formatDate, formatDateToISO } from "../hooks/useFormatDate";
 
 const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   const removeBookById = useBookStore((state) => state.removeBookById);
@@ -28,7 +28,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
         <div id="icons" className="flex gap-1">
           <Tooltip content="Eliminar libro" placement="top">
             <ButtonIcon
-              onClick={() => removeBookById(book.id_book)}
+              onClick={async () => await removeBookById(book.id_book)}
               icon={<Trash2 className="w-4 h-4" />}
             />
           </Tooltip>
@@ -64,7 +64,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
             <small className="text-body block">
               {!book.read_date
                 ? "No especificada"
-                : formatDateToISO(book.read_date ?? null)}
+                : formatDate(book.read_date ?? null)}
             </small>
           </div>
 
@@ -82,22 +82,23 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
       <Modal
         buttonToggleText="Leer más"
         modalHeader="Editar libro"
-        submitButtonText="Guardar cambios"
         icon={<ArrowRight className="w-4 h-4" />}
-        cancelButtonText="Cancelar"
-        children={
+      >
+        {(close) => (
           <Form
             initialValues={book}
-            onSubmit={async (data) =>
+            onSubmit={async (data) => {
               await updateBook(book.id_book, {
                 ...data,
                 read_date: formatDateToISO(data.readDate),
-              })
-            }
+              });
+              close(); // ✅ close modal after save
+            }}
+            onCancel={close} // ✅ cancel button closes modal
             submitLabel="Guardar cambios"
           />
-        }
-      />
+        )}
+      </Modal>
     </div>
   );
 };

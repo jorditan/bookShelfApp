@@ -1,22 +1,48 @@
 import { create } from "zustand";
 import type { Book } from "../types/book-interface";
-import { createBook, deleteBookById, editBook } from "../api/books";
-import { toast } from "react-hot-toast/headless";
+import {
+  createBook,
+  deleteBookById,
+  editBook,
+  searchBookByParams,
+} from "../api/books";
+import toast from "react-hot-toast";
 import type { createBookPayload } from "../types/createBookPayload";
 
 type bookStore = {
   books: Book[];
-  createBook: (book: Book) => void;
-  setBooks: (books: Book[]) => void;
-  updateBook: (id: number, data: Partial<Book>) => Promise<void>;
-  removeBookById: (id: number) => void;
-  fetchBooks: () => Promise<void>;
   loading?: string | boolean;
   error?: string | null;
+  searchQuery?: string;
+  searchBook?: (params: { title?: string; author?: string }) => Promise<void>;
+  createBook: (book: Book) => Promise<Book>;
+  setBooks: (books: Book[]) => void;
+  updateBook: (id: number, data: Partial<Book>) => Promise<void>;
+  removeBookById: (id: number) => Promise<void>;
+  fetchBooks: () => Promise<void>;
 };
 
 const useBookStore = create<bookStore>((set) => ({
   books: [],
+  searchQuery: "",
+
+  searchBook: async (params: { title?: string; author?: string }) => {
+    try {
+      set({ loading: true, error: null });
+
+      const books: Book[] = await searchBookByParams(params);
+      if (books.length === 0) {
+        toast("No se han encontrado libros", { icon: "📚" });
+      }
+      set({ books });
+    } catch (err) {
+      toast.error("Algo no ha salido como se esperaba");
+      set({ error: "Something went wrong" });
+      throw err;
+    } finally {
+      set({ loading: false });
+    }
+  },
 
   createBook: async (payload: createBookPayload) => {
     try {
@@ -45,6 +71,7 @@ const useBookStore = create<bookStore>((set) => ({
           b.id_book === updated.id_book ? updated : b
         ),
       }));
+      toast.success("Libro actualizado con éxito");
     } catch (err) {
       console.log(err);
       set({ error: "Failed to update book" });

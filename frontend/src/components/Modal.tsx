@@ -1,3 +1,4 @@
+import { CloseIcon } from "flowbite-react";
 import React, { useMemo, useState, type JSX } from "react";
 
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
   submitButtonText?: string;
   icon?: JSX.Element;
   cancelButtonText?: string;
-  children?: JSX.Element | JSX.Element[];
+  children: (close: () => void) => JSX.Element;
 }
 
 const Modal: React.FC<Props> = ({
@@ -53,7 +54,7 @@ const Modal: React.FC<Props> = ({
           className="relative p-4 w-full max-w-lg max-h-full"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6 max-h-[75vh] overflow-y-auto">
+          <div className="relative bg-neutral-primary-soft border border-default rounded-base shadow-sm p-4 md:p-6 max-h-[75vh] max-w-12xl overflow-y-auto">
             <div className="flex overflow-y-auto items-center justify-between border-b border-default pb-4 md:pb-5">
               <h3 className="text-lg font-medium text-heading">
                 {modalHeader}
@@ -64,27 +65,11 @@ const Modal: React.FC<Props> = ({
                 onClick={handleClose}
                 aria-label="Cerrar modal"
               >
-                <svg
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18 17.94 6M18 18 6.06 6"
-                  />
-                </svg>
+                <CloseIcon className="w-4 h-4" aria-hidden="true" />
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            {children}
+            {children(handleClose)}
           </div>
         </div>
       </div>

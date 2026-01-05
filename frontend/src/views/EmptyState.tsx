@@ -3,7 +3,7 @@ import Button from "../components/Button";
 
 const EmptyState = () => {
   return (
-    <div className="flex items-center justify-center h-full py-20 text-wrap">
+    <div className="flex items-center justify-center h-full w-full py-20 text-wrap">
       <div className="text-wrap w-2/4 gap-4 flex flex-col items-center">
         <div className="px-4 py-4 bg-default border border-gray-600 rounded-2xl">
           <Book className="w-12 h-12 text-body" />

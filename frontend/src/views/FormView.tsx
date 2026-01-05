@@ -8,8 +8,8 @@ const FormView = () => {
   const navigate = useNavigate();
   return (
     <>
-      <section className="max-w-3xl mx-auto flex gap-4 flex-col">
-        <div className="flex gap-2 items-center mb-4">
+      <section className="max-w-3xl mx-auto flex gap-2 flex-col mb-8">
+        <div className="flex gap-2 items-center">
           <NavLink to="/">
             <ArrowLeft className="text-body" />
           </NavLink>
@@ -19,6 +19,7 @@ const FormView = () => {
           <small className="text-body">* campos obligatorios</small>
         </div>
         <Form
+          onCancel={() => navigate("/")}
           onSubmit={async (data) => {
             await createBook({
               ...data,

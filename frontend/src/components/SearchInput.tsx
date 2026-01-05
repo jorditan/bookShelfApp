@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 
 interface Props {
   onSearch: (query: string) => void;
+  placeholder: string;
 }
 
-const SearchInput = ({ onSearch }: Props) => {
+const SearchInput = ({ onSearch, placeholder }: Props) => {
   const [value, setValue] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,7 +41,7 @@ const SearchInput = ({ onSearch }: Props) => {
             type="search"
             id="search"
             className="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-            placeholder="Ingresa el título o autor del libro"
+            placeholder={placeholder}
           />
           <button
             type="submit"

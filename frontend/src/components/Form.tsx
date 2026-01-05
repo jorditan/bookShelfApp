@@ -17,6 +17,7 @@ interface BookFormValues {
 interface FormProps {
   initialValues?: Partial<BookFormValues>;
   onSubmit: (data: BookFormValues) => Promise<void> | void;
+  onCancel?: () => void;
   submitLabel?: string;
 }
 
@@ -24,6 +25,7 @@ const Form = ({
   initialValues,
   onSubmit,
   submitLabel = "Guardar libro",
+  onCancel,
 }: FormProps) => {
   const [form, setForm] = useState<BookFormValues>({
     title: initialValues?.title || "",
@@ -53,7 +55,7 @@ const Form = ({
   }
   return (
     <>
-      <form onSubmit={handleSubmit} className="w-full mx-auto space-y-4">
+      <form onSubmit={handleSubmit} className="w-full pt-6 mx-auto space-y-4">
         <div className="flex flex-col gap-4">
           <div id="name" className="flex flex-col gap-1.5">
             <label
@@ -185,9 +187,10 @@ const Form = ({
             type="info"
           />
         </div>
-        <div className="flex w-full justify-end mb-8">
+        <div className="flex w-full justify-end">
           <div className="flex gap-2">
             <button
+              onClick={onCancel}
               type="button"
               className="text-body hover:cursor-pointer  bg-neutral-primary border border-default hover:bg-neutral-secondary-soft hover:text-heading focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
             >
