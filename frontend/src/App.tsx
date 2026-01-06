@@ -5,7 +5,6 @@ import Navbar from "./components/Navbar";
 import HomeView from "./views/HomeView";
 import FormView from "./views/FormView";
 import { Toaster } from "react-hot-toast";
-import Footer from "./components/Footer";
 
 function App() {
   useEffect(() => {
@@ -23,7 +22,6 @@ function App() {
           <Route path="/edit/:id" element={<FormView />} />
         </Routes>
       </main>
-      <Footer />
     </>
   );
 }

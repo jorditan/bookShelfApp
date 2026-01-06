@@ -8,13 +8,15 @@ const FormView = () => {
   return (
     <>
       <section className="max-w-3xl mx-auto flex gap-2 flex-col mb-8">
-        <div className="flex gap-2 items-center">
-          <NavLink to="/">
-            <ArrowLeft className="text-body" />
-          </NavLink>
-          <h1 className="text-3xl font-bold text-heading font-sans">
-            Añadir reseña de un libro
-          </h1>
+        <div className="flex justify-start items-start lg:items-center flex-col lg:flex-row gap-2 ">
+          <div className="flex gap-2 items-center">
+            <NavLink to="/">
+              <ArrowLeft className="text-body" />
+            </NavLink>
+            <h1 className="text-2xl lg:text-3xl font-bold text-heading font-sans">
+              Añadir reseña de un libro
+            </h1>
+          </div>
           <small className="text-body">* campos obligatorios</small>
         </div>
         <Form

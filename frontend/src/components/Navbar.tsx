@@ -15,19 +15,19 @@ const Navbar = () => {
       <div className="max-w-7xl flex gap-4 items-center justify-between mx-auto p-4">
         <Link to={"/"} className="flex items-center gap-2">
           <BookAIcon className="h-8 w-8 text-body" />
-          <span className="hidden md:block self-center text-xl text-heading font-semibold whitespace-nowrap">
+          <span className="hidden lg:block self-center text-xl text-heading font-semibold whitespace-nowrap">
             BookShelf
           </span>
         </Link>
 
-        <div className="md:w-md w-full md:order-3">
+        <div className="lg:w-md w-full">
           <SearchInput
             placeholder="Buscar libro por título..."
             onSearch={(query) => searchBook && searchBook({ title: query })}
           />
         </div>
 
-        <div className="hidden md:inline-flex w-fit h-full md:order-2 md:gap-4 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <div className="hidden lg:inline-flex w-fit h-full md:order-2 md:gap-4 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {books.length > 0 && (
             <NavLink to={"add"}>
               <Button label="Añadir reseña" />
@@ -37,6 +37,13 @@ const Navbar = () => {
             <ButtonIcon onClick={changeTheme} icon={<SunMoon />} />
           </Tooltip>
         </div>
+
+        <div className="lg:hidden h-full">
+          <Tooltip content="Cambiar tema" placement="bottom">
+            <ButtonIcon onClick={changeTheme} icon={<SunMoon />} />
+          </Tooltip>
+        </div>
+
         <div
           className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
           id="navbar-cta"
