@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import HomeView from "./views/HomeView";
 import FormView from "./views/FormView";
 import { Toaster } from "react-hot-toast";
+import Footer from "./components/Footer";
 
 function App() {
   useEffect(() => {
@@ -15,13 +16,14 @@ function App() {
     <>
       <Navbar />
       <Toaster position="bottom-center" />
-      <main className="pt-24 px-8">
+      <main className="pt-24 px-4 md:px-8 h-1een-screen min-h-screen">
         <Routes>
           <Route path="/" element={<HomeView />} />
           <Route path="/add" element={<FormView />} />
           <Route path="/edit/:id" element={<FormView />} />
         </Routes>
       </main>
+      <Footer />
     </>
   );
 }

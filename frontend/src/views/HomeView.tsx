@@ -3,6 +3,8 @@ import BookList from "../components/BookList";
 import EmptyState from "./EmptyState";
 import useBookStore from "../store/useBookStore";
 import FilterButton from "../components/FilterButton";
+import { useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
 
 const HomeView = () => {
   useEffect(() => {
@@ -10,11 +12,29 @@ const HomeView = () => {
   }, []);
 
   const books = useBookStore((state) => state.books);
+  const navigate = useNavigate();
+  const { searchQuery } = useBookStore();
 
   return (
     <section className="flex flex-col gap-4">
-      {books.length === 0 ? (
-        <EmptyState />
+      {searchQuery !== "" && books.length === 0 ? (
+        <EmptyState
+          icon={<Search className="w-12 h-12 text-body" />}
+          description={`No se han encontrado libros para la búsqueda: "${searchQuery}"`}
+          buttonLabel="Limpiar búsqueda"
+          onClick={() => {
+            useBookStore.getState().fetchBooks();
+          }}
+        />
+      ) : books.length === 0 ? (
+        <EmptyState
+          description=" Aún no haz añadido la reseña de ningún libro.
+          Haz click en el botón para comenzar"
+          buttonLabel="Añadir reseña"
+          onClick={() => {
+            navigate("/add");
+          }}
+        />
       ) : (
         <div className="flex flex-col justify-between items-start gap-4 ">
           <div id="filters" className="flex gap-2 w-full justify-end">

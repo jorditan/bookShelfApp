@@ -20,6 +20,7 @@ type bookStore = {
   updateBook: (id: number, data: Partial<Book>) => Promise<void>;
   removeBookById: (id: number) => Promise<void>;
   fetchBooks: () => Promise<void>;
+  setQuery?: (query: string) => void;
 };
 
 const useBookStore = create<bookStore>((set) => ({
@@ -118,6 +119,8 @@ const useBookStore = create<bookStore>((set) => ({
       set({ loading: false });
     }
   },
+
+  setQuery: (query: string) => set({ searchQuery: query }),
 }));
 
 export default useBookStore;

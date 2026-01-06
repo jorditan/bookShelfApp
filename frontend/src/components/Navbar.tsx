@@ -12,22 +12,22 @@ const Navbar = () => {
   const { books } = useBookStore();
   return (
     <nav className="bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default">
-      <div className="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="max-w-7xl flex gap-4 items-center justify-between mx-auto p-4">
         <Link to={"/"} className="flex items-center gap-2">
           <BookAIcon className="h-8 w-8 text-body" />
-          <span className="self-center text-xl text-heading font-semibold whitespace-nowrap">
+          <span className="hidden md:block self-center text-xl text-heading font-semibold whitespace-nowrap">
             BookShelf
           </span>
         </Link>
 
-        <div className="w-md">
+        <div className="md:w-md w-full md:order-3">
           <SearchInput
             placeholder="Buscar libro por título..."
             onSearch={(query) => searchBook && searchBook({ title: query })}
           />
         </div>
 
-        <div className="inline-flex h-full md:order-2 gap-4 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <div className="hidden md:inline-flex w-fit h-full md:order-2 md:gap-4 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {books.length > 0 && (
             <NavLink to={"add"}>
               <Button label="Añadir reseña" />

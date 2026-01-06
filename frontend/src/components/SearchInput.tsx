@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import useBookStore from "../store/useBookStore";
+import { useEffect } from "react";
 
 interface Props {
   onSearch: (query: string) => void;
@@ -7,21 +8,21 @@ interface Props {
 }
 
 const SearchInput = ({ onSearch, placeholder }: Props) => {
-  const [value, setValue] = useState("");
+  const { searchQuery, setQuery } = useBookStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(value.trim());
+    onSearch(searchQuery!.trim());
   };
 
   useEffect(() => {
-    if (!value.trim()) return;
+    if (!searchQuery!.trim()) return;
 
     const timeout = setTimeout(() => {
-      onSearch(value.trim());
+      onSearch(searchQuery!.trim());
     }, 500);
     return () => clearTimeout(timeout);
-  }, [value]);
+  }, [searchQuery]);
 
   return (
     <>
@@ -37,7 +38,7 @@ const SearchInput = ({ onSearch, placeholder }: Props) => {
             <Search className="w-4 h-4 text-body" />
           </div>
           <input
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setQuery!(e.target.value)}
             type="search"
             id="search"
             className="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"

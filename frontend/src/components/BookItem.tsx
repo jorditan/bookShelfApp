@@ -20,7 +20,7 @@ const BookItem: React.FC<{ book: Book }> = ({ book }) => {
   const updateBook = useBookStore((state) => state.updateBook);
 
   return (
-    <div className="bg-neutral-primary-soft hover:border-brand hover:shadow-md transition-all delay-100 block max-w-sm min-w-md p-6 border border-default rounded-base shadow-xs hover:cursor-pointer">
+    <div className="bg-neutral-primary-soft hover:border-brand hover:shadow-md transition-all delay-100 block w-full md:max-w-sm md:min-w-md p-6 border border-default rounded-base shadow-xs hover:cursor-pointer">
       <div className="flex justify-between mt-2 mb-2 items-center">
         <h5 className="font-mono text-2xl font-semibold tracking-tight text-heading">
           {book.title}
